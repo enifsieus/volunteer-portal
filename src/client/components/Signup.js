@@ -10,7 +10,6 @@ import style from './Auth.less';
 import theme from '../theme.css';
 
 import Button from './Button';
-import DateField from './DateField';
 import FormField from './FormField';
 import { FormattedMessage } from 'react-intl';
 
@@ -60,7 +59,8 @@ export const SignupForm = ({ state, status, errors, onSignup, onChange }) => (
                title={<FormattedMessage
                    id="user.email"
                    defaultMessage={labelFor('email', "Email Address", errors)} />} />
-    <DateField icon={dateSvg}
+    <FormField icon={dateSvg}
+               type="date"
                name="dateOfBirth"
                isError={isInError('dateOfBirth', errors)}
                value={state.dateOfBirth}
@@ -68,7 +68,7 @@ export const SignupForm = ({ state, status, errors, onSignup, onChange }) => (
                title={<FormattedMessage
                    id="user.dateOfBirth"
                    defaultMessage={labelFor('dateOfBirth', 'Date of Birth', errors)} />} />
-    <FormField isObfuscated={true}
+    <FormField type="password"
                icon={lockSvg}
                name="password"
                isError={isInError('password', errors)}
@@ -77,7 +77,7 @@ export const SignupForm = ({ state, status, errors, onSignup, onChange }) => (
                title={<FormattedMessage
                    id="user.password"
                    defaultMessage={labelFor('password', "Password", errors)} />} />
-    <FormField isObfuscated={true}
+    <FormField type="password"
                icon={lockSvg}
                name="repeatpassword"
                isError={isInError('repeatpassword', errors)}
