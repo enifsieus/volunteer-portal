@@ -68,6 +68,7 @@ class DataLoader extends React.Component {
     // Single service call. Lemon squeezy.
     if (typeof serviceCall === 'string') {
       const data = serviceCache[serviceCall];
+      console.log("data: " + JSON.stringify(data));
       if (data == null || data === LOADING) {
         return <Spinner />;
       }

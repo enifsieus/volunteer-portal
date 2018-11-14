@@ -22,6 +22,13 @@
 
 USE nyanPortal;
 
-INSERT INTO users (firstName,lastName,email,photo,password) VALUES
-	('Pinchy','McPinchface','butts@butts.com','pinchy.jpg','$2a$08$vuIFiKM3Vxv4sBWzRIgCKuXiAIeqm0l.9TN5OWPOhwXCfDXg.chOu')
-	
+INSERT INTO users (firstName,lastName,email,photo,password)
+  VALUES ('Pinchy','McPinchface','butts@butts.com','pinchy.jpg', '$2a$08$vuIFiKM3Vxv4sBWzRIgCKuXiAIeqm0l.9TN5OWPOhwXCfDXg.chOu');
+INSERT INTO events (name, edition, description, startDateTime, endDateTime,
+                    registrationStart, registrationEnd, , lotteryStatus, photo)
+  VALUES ('UMADBRO', '2019', 'You might actually die by rapid oxidation',
+          '2019-08-26', '2019-09-02', 'prereg',
+          NOW(), '2019-08-25 00:00:00',
+          'umadbro.jpg');
+
+

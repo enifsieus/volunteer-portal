@@ -49,6 +49,11 @@ CREATE TABLE events (
 	edition VARCHAR(128),
 	startDateTime DATETIME,
 	endDateTime DATETIME,
+	registrationStart DATETIME,
+	registrationEnd DATETIME,
+	lotteryStatus ENUM ('none', 'prereg', 'active', 'closed') NOT NULL default 'none',
+	isActive BIT DEFAULT 1,
+	description VARCHAR(512),
 	photo VARCHAR(256)
 );
 
@@ -72,6 +77,42 @@ CREATE TABLE users (
 	photo VARCHAR(256)
 );
 
+CREATE TABLE tickets (
+	user  INT, FOREIGN KEY (user) REFERENCES users(id) ON DELETE CASCADE,
+	event INT, FOREIGN KEY (event) REFERENCES events(id) ON DELETE CASCADE,
+	firstName VARCHAR(32) NOT NULL,
+	lastName  VARCHAR(32) NOT NULL,
+	lastUpdate DATETIME DEFAULT NULL,
+	status ENUM('none', 'waitlist', 'offered', 'ticketed', 'refused', 'lapsed', 'refunded', 'onhold') DEFAULT 'none',
+	UNIQUE(user, event)
+);
+
+CREATE TABLE waitlist (
+    event INT, FOREIGN KEY (event) REFERENCES events(id) ON DELETE CASCADE,
+    user  INT, FOREIGN KEY (user) REFERENCES events(id) ON DELETE CASCADE,
+    position INT NOT NULL DEFAULT -1,
+    UNIQUE (user, event)
+);
+
+CREATE TABLE saleItems (
+    id    INT AUTO_INCREMENT PRIMARY KEY,
+    event INT, FOREIGN KEY(event) REFERENCES events(id) ON DELETE CASCADE,
+    name  VARCHAR(32),
+    description VARCHAR(255),
+    price DECIMAL(4,2) NOT NULL,
+    currency ENUM('USD', 'CAD') NOT NULL
+);
+
+CREATE TABLE ticketOffers (
+    user  INT, FOREIGN KEY(user) REFERENCES users(id) ON DELETE CASCADE,
+    event INT, FOREIGN KEY(event) REFERENCES events(id) ON DELETE CASCADE,
+    item  INT, FOREIGN KEY(item) REFERENCES saleItems(id) ON DELETE CASCADE,
+    expires DATETIME,
+    offerType ENUM('directed', 'lottery') NOT NULL,
+    note VARCHAR (64),
+    status ENUM('open','closed')
+);
+
 CREATE TABLE roles (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	team INT, FOREIGN KEY (team) REFERENCES teams(id) ON DELETE CASCADE,
@@ -93,12 +134,6 @@ CREATE TABLE shifts (
 	maxStaff INT DEFAULT 1
 );
 
-CREATE TABLE ticketStatus (
-	user INT, FOREIGN KEY (user) REFERENCES users(id) ON DELETE CASCADE,
-	event INT, FOREIGN KEY (event) REFERENCES events(id) ON DELETE CASCADE,
-	status ENUM('none','waitlist','ticketed') DEFAULT 'none'
-);
-
 CREATE TABLE teamLeads (
 	teamLead INT, FOREIGN KEY (teamLead) REFERENCES users(id) ON DELETE CASCADE,
 	team INT, FOREIGN KEY (team) REFERENCES teams(id) ON DELETE CASCADE,
@@ -108,7 +143,7 @@ CREATE TABLE teamLeads (
 CREATE TABLE shiftAssignments (
 	user INT, FOREIGN KEY (user) REFERENCES users(id) ON DELETE CASCADE,
 	shift INT, FOREIGN KEY (shift) REFERENCES shifts(id) ON DELETE CASCADE,
-	status ENUM('pending','fulfilled','noshow') DEFAULT 'pending'
+	status ENUM('pending', 'fulfilled', 'noshow') DEFAULT 'pending'
 );
 
 CREATE TABLE roleHierarchy (

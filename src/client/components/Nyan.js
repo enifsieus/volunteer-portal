@@ -10,10 +10,11 @@ import Event from './Event';
 import style from './Nyan.less';
 
 const pageFactory = (HeaderComponent, PageComponent) => ({user, match}) => (
+  console.log("Header: " + HeaderComponent + " Page: " + PageComponent + " user: " + user + " match: " + match) ||
   <div className={style.nyan}>
     <HeaderComponent user={user} />
     <section className={style.content}>
-      <PageComponent match={match} />
+      <PageComponent match={match} user={user}/>
     </section>
     <Footer />
   </div>

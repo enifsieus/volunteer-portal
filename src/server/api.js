@@ -14,10 +14,10 @@ import { getById as getEvent } from './stores/event-store';
 import { getAll as getDepartments } from './stores/department-store';
 import { getById as getUserById } from './stores/user-store';
 import { getByEmail as getUserByEmail } from './stores/user-store';
-import { createUser } from './stores/user-store';
+import { createUser, getTicketStatus } from './stores/user-store';
 import fetch from 'isomorphic-fetch';
 
-import { body, validationResult } from 'express-validator/check';
+import { body, check, validationResult } from 'express-validator/check';
 
 const HOST = 'localhost';
 
@@ -82,6 +82,19 @@ const POSTS = [
         console.log("[signup] " + JSON.stringify(error));
         return response.status(500).json({ reason: "Registration could not complete. Please try again later." });
      });
+   }],
+
+   /* Register user for an event */
+   ['/events/:id/register' , [
+     check('id', 'User ID must be supplied and valid').isInt(),
+     check('eventId', 'Event ID must be supplied and valid').isInt()
+   ], (request, response) => {
+     const errors = validationResult(request);
+     if (!errors.isEmpty()) {
+        return response.status(422).json({ errors: errors.array() });
+     }
+
+     return response.status(418);
    }]
 ];
 
@@ -97,12 +110,39 @@ const GETS = [
     });
   }],
 
-  ['/users/:id?', isLoggedIn, (request, response) => {
+  ['/users/:id?', isLoggedIn, [
+    check('id', 'User ID must be supplied and valid').isInt()
+  ], (request, response) => {
     getUserById(request.params.id).then(users => response.json(users))
+  }],
+
+  ['/users/:id/ticket/:eventId?', isLoggedIn, [
+    check('id', 'User ID must be supplied and valid').isInt(),
+    check('eventId', 'Event ID must be supplied and valid').isInt()
+  ], (request, response) => {
+    console.log("/users/" + request.params.id + "/ticket/" + request.params.eventId);
+    getTicketStatus(request.params.id, request.params.eventId).then(
+        status => {
+            console.log("getTicketstatus: " + JSON.stringify(status));
+            if (status.length == 0)
+                return response.json({status: 'none'});
+            return response.json(status);
+        }).catch(e => console.log("getTicketStatus: " + JSON.stringify(e)));
   }],
 
   ['/events/:id?', isLoggedIn, (request, response) => {
     getEvent(request.params.id).then(events => response.json(events));
+  }],
+
+  ['/event/:id/lottery', isLoggedIn, [
+    check('id', 'No event id specified').isInt(),
+  ], (request, response) => {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(422).json({ errors: errors.array() });
+    }
+
+    return response.status(418);
   }],
 
   ['/events/:id/departments', isLoggedIn, (request, response) => {

@@ -12,6 +12,5 @@ export default ({ userName, avatarUrl, menuLabel, small }) => (
                                style.bigName}>{userName}</span>
       <UserMenu label={small ? null : menuLabel} />
     </div>
-    <Avatar url={avatarUrl} name={userName} width={small ? '40' : '70'} />
   </div>
 );

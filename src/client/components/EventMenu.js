@@ -17,7 +17,8 @@ const MenuItem = ({ label, link, selected }) => (
   </li>
 );
 
-export default ({ eventId, eventName, selectedTab }) => (
+export default ({ eventId, eventName, user, selectedTab }) => (
+  console.log("EventMenu.js user: " + user) ||
   <div className={concat(style.EventMenu,
                          theme.page_padding,
                          theme.txt_lightest,
@@ -29,17 +30,12 @@ export default ({ eventId, eventName, selectedTab }) => (
                     label={<FormattedMessage id="event.overview" defaultMessage="Event Overview" />}
                     selected={selectedTab === 'overview'}
           />
-          <MenuItem link={eventLink(eventId, 'teams')}
-                    label={<FormattedMessage id="event.teams" defaultMessage="Departments & Teams" />}
-                    selected={selectedTab === 'teams'}
+          <MenuItem link={eventLink(eventId, 'ticketing')}
+                    label={<FormattedMessage id="event.ticketing" defaultMessage="Ticketing" /> }
           />
           <MenuItem link={eventLink(eventId, 'volunteers')}
                     label={<FormattedMessage id="event.volunteers" defaultMessage="Volunteers" />}
                     selected={selectedTab === 'volunteers'}
-          />
-          <MenuItem link={eventLink(eventId, 'schedule')}
-                    label={<FormattedMessage id="event.schedule" defaultMessage="Schedule" />}
-                    selected={selectedTab === 'schedule'}
           />
         </ul>
       </nav>
